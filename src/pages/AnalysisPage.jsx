@@ -5,7 +5,7 @@ import * as requests from '../requests';
 
 class AnalysisPage extends React.Component {
     state = {
-        analyze_mode: 'mode1',
+        analyze_mode: 'mode2',
         fileToUpload: undefined,
         isFileUploaded: false,
         analysisResult: undefined,
@@ -15,26 +15,19 @@ class AnalysisPage extends React.Component {
     handleFileUpload = (e) => this.setState({ fileToUpload: e.target.files[0] });
 
     onUploadButtonClick = () => {
-        const isFileUploadedCallback = () => this.setState({ isFileUploaded: true });
+        const isFileUploadedCallback = (result) => {
+            console.log('result', result)
+            this.setState({ analysisResult: result });
+        }
+
+        const formData = new FormData();
+        formData.append('file', this.state.fileToUpload);
 
         requests.uploadFile(
             this.state.analyze_mode,
             this.state.fileToUpload,
+            formData,
             isFileUploadedCallback
-        );
-    };
-
-    onAnalyzeButtonClick = () => {
-        const analysedDataCallback = (data) => {
-            this.setState({
-                analysisResult: data
-            });
-        };
-
-        requests.analyzeFile(
-            this.state.analyze_mode,
-            this.state.fileToUpload,
-            analysedDataCallback
         );
     };
 
@@ -82,7 +75,7 @@ class AnalysisPage extends React.Component {
                             onClick={this.onUploadButtonClick}
                             disabled={this.state.fileToUpload === undefined}
                         >
-                            Загрузить файл
+                            Анализировать
                         </button>
                     </div>
                     <div className="analyze__upload-filename">
@@ -95,16 +88,6 @@ class AnalysisPage extends React.Component {
                             </React.Fragment>
                         )}
                     </div>
-                </div>
-
-                <div className="analyze__upload-block">
-                    <button
-                        className='btn'
-                        onClick={this.onAnalyzeButtonClick}
-                        disabled={!this.state.isFileUploaded}
-                    >
-                        Анализировать
-                    </button>
                 </div>
 
                 {this.state.analysisResult !== undefined && (

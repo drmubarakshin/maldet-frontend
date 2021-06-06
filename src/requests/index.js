@@ -82,14 +82,27 @@ export const searchData = async (data, callback) => {
 };
 
 
-export const uploadFile = (mode, fileToUpload, callback) => {
-    const url = `${baseUrl}/${fileToUpload.name}/${mode}`;
-    
-    callback();
-};
+export const uploadFile = (mode, fileToUpload, data, callback) => {
+    const requestMode = mode === 'mode1' ? '1' : '2';
+    const url = `${baseUrl}/files/${fileToUpload.name}/${requestMode}`;
 
-export const analyzeFile = (mode, fileToAnalyze, callback) => {
-    const url = `${baseUrl}/analysis/${mode}`;
-
-    callback(stub_analysed_data);
+    axios.post(url, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            'dynamic_search': '',
+            'search_ip': '',
+            'date_date': '',
+            'IP': '127.0.0.1'
+        }
+    })
+        .then(res => {
+            if (requestMode === '1')
+                callback(res.data)
+            else {
+                console.log('resp.data', res.data);
+                FileDownload(res.data, `${fileToUpload.name}__result.zip`);
+                callback('ФАЙЛ УСПЕШНО СКАЧАН');
+            }
+        })
+        .catch(err => console.log(err));
 };
