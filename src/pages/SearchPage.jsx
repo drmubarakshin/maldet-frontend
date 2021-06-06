@@ -16,11 +16,8 @@ class SearchPage extends React.Component {
     onModeChange        = (e) => this.setState({ search_mode: e.target.value });
 
     onSearchButtonClick = async (e) => {
-        const setDataCallback = (response) => {
-            console.log('resp', response);
-            this.setState({ fetchedData: response });
-        }
-        
+        const setDataCallback = (response) => this.setState({ fetchedData: response });
+
         const collectedData = {
             search_mode: this.state.search_mode,
             input_data: this.state.input
