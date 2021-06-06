@@ -16,15 +16,14 @@ class SearchPage extends React.Component {
     onModeChange        = (e) => this.setState({ search_mode: e.target.value });
 
     onSearchButtonClick = async (e) => {
-        e.preventDefault();
-
+        const setDataCallback = (response) => {
+            console.log('resp', response);
+            this.setState({ fetchedData: response });
+        }
+        
         const collectedData = {
             search_mode: this.state.search_mode,
             input_data: this.state.input
-        };
-
-        const setDataCallback = (response) => {
-            this.setState({ fetchedData: response });
         };
 
         await requests.searchData(collectedData, setDataCallback);
@@ -33,7 +32,7 @@ class SearchPage extends React.Component {
     render() {
         return (
             <div className="search">
-                <div className="search__radio">
+                <div className="radio-group">
                     <div className="radio">
                         <input
                             type="radio"
@@ -84,46 +83,22 @@ class SearchPage extends React.Component {
                     />
                     <button
                         onClick={this.onSearchButtonClick}
-                        className="search__input-btn"
+                        className="btn"
                         disabled={this.state.input === ''}
                     >
                         Найти
                     </button>
                 </div>
-
-                <div className="search__body">
-                    <pre>
-                        {this.state.fetchedData && JSON.stringify(this.state.fetchedData, null, 2)}
-                    </pre>
-                </div>
+                {this.state.fetchedData && (
+                    <div className="search__body">
+                        <pre>
+                            {JSON.stringify(this.state.fetchedData, null, 2)}
+                        </pre>
+                    </div>
+                )}
             </div>
         );
     }
 };
 
 export default SearchPage;
-
-
-
-// const jsonExample = {
-//     "glossary": {
-//         "title": "example glossary",
-//         "GlossDiv": {
-//             "title": "S",
-//             "GlossList": {
-//                 "GlossEntry": {
-//                     "ID": "SGML",
-//                     "SortAs": "SGML",
-//                     "GlossTerm": "Standard Generalized Markup Language",
-//                     "Acronym": "SGML",
-//                     "Abbrev": "ISO 8879:1986",
-//                     "GlossDef": {
-//                         "para": "A meta-markup language, used to create markup languages such as DocBook.",
-//                         "GlossSeeAlso": ["GML", "XML"]
-//                     },
-//                     "GlossSee": "markup"
-//                 }
-//             }
-//         }
-//     }
-// };
